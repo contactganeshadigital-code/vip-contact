@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Gold ring -->
+    <path
+        android:pathData="M54,21 a33,33 0 1,1 0,66 a33,33 0 1,1 0,-66"
+        android:strokeColor="#FFBA3B"
+        android:strokeWidth="3"
+        android:fillColor="#00000000" />
+    <!-- Gold star -->
+    <path
+        android:fillColor="#FFBA3B"
+        android:pathData="M54,28 L60.17,45.51 L78.73,45.97 L63.99,57.24 L69.28,75.03 L54,64.5 L38.72,75.03 L44.01,57.24 L29.27,45.97 L47.83,45.51 Z" />
+</vector>

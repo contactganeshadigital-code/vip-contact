@@ -1,0 +1,67 @@
+name: Build VIP CONTACT APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code ghya
+        uses: actions/checkout@v4
+
+      - name: Java 17 setup
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle setup
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: APK build kara
+        shell: bash
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee build.log
+
+      - name: Build log save (error ala tar)
+        if: failure()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          mkdir -p /tmp/out && cp build.log /tmp/out/
+          git checkout --orphan build-log
+          git rm -rf . -q
+          cp /tmp/out/build.log .
+          git add build.log
+          git commit -m "Build log ${GITHUB_SHA::7}" -q
+          git push -f origin build-log
+
+      - name: APK rename
+        run: |
+          mkdir -p /tmp/apk
+          cp app/build/outputs/apk/release/*.apk /tmp/apk/VIP-CONTACT-v1.0.apk
+
+      - name: APK upload (Actions artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: VIP-CONTACT-APK
+          path: /tmp/apk/VIP-CONTACT-v1.0.apk
+
+      - name: APK "apk" branch var theva
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout --orphan apk
+          git rm -rf . -q
+          git clean -fdx -q
+          cp /tmp/apk/VIP-CONTACT-v1.0.apk .
+          git add VIP-CONTACT-v1.0.apk
+          git commit -m "APK ${GITHUB_SHA::7}" -q
+          git push -f origin apk
